@@ -1,0 +1,113 @@
+//
+   Created by Adrian on 4/6/2016.
+
+extends layout
+block content
+    nav.navbar.navbar-default.navbar-fixed-top
+        .container-fluid
+            // Brand and toggle get grouped for better mobile display
+            .navbar-header
+                button.navbar-toggle.collapsed(type='button', data-toggle='collapse', data-target='#bs-example-navbar-collapse-1', aria-expanded='false')
+                    span.sr-only Toggle navigation
+                    span.icon-bar
+                    span.icon-bar
+                    span.icon-bar
+
+                if session.admin
+                    span.text-holder.brand ADMIN DASHBOARD
+                else
+                    span.text-holder.brand DASHBOARD
+            // Collect the nav links, forms, and other content for toggling
+            .collapse.navbar-collapse.content-toggle
+                ul.nav.navbar-nav
+                    li.active
+                        a(href='#', data-item='home')
+                            | Home
+                            span.sr-only (current)
+                    li
+                        a(href='#', data-item='message') Message
+                    li
+                        a(href='#', data-item='profile') Action
+                    if session.admin
+                        li.dropdown
+                            a.dropdown-toggle(href='#', data-toggle='dropdown', role='button', aria-haspopup='true', aria-expanded='false')
+                                | Admin menu
+                                span.caret
+                            ul.dropdown-menu
+                                li
+                                    a(href='#', data-item='employee_list') View Employees
+                                li
+                                    a(href='#') Another action
+                                li
+                                    a(href='#') Something else here
+                                li.divider(role='separator')
+                                li
+                                    a(href='#') Separated link
+                                li.divider(role='separator')
+                                li
+                                    a(href='#') One more separated link
+                ul.nav.navbar-nav.navbar-right
+                    li
+                        span.text-holder
+                            | #{session.user}
+                            if session.admin
+                                | &nbsp; (admin)
+                            | ,
+                    li
+                        a(href='logout') LOG OUT
+                form.navbar-form.navbar-right(role='search')
+                    .form-group
+                        input.form-control(type='text', placeholder='Search')
+                    button.btn.btn-default(type='submit') Submit
+            // /.navbar-collapse
+        // /.container-fluid
+
+    .modal#edit-user-modal.fade(tabindex='-1', role='dialog')
+        .modal-dialog
+            .modal-content
+                .modal-header
+                    button.close(type='button', data-dismiss='modal', aria-label='Close')
+                        span(aria-hidden='true') X
+                    h4.modal-title.text-center Edit employee info
+                .modal-body
+                    form#user_info(role='form')
+                        .alert.alert-success.text-center Your changes have been saved.
+                        .form-group.hidden
+                            input.form-control(type='text', name='id')
+                        .form-group
+                            label(for='first_name') First Name:
+                            input#first_name.form-control(type='text', name='first_name' placeholder='First Name')
+                        .form-group
+                            label(for='last_name') Last Name:
+                            input#last_name.form-control(type='text', name='last_name' placeholder='Last Name')
+                        .form-group
+                            label(for='birth_date') Birth Date:
+                            input#birth_date.form-control(type='text', name='birth_date' placeholder='Birth Date')
+                        .form-group
+                            label(for='phone') Phone:
+                            input#phone.form-control(type='text', name='phone' placeholder='Phone')
+                        .form-group
+                            label(for='email') Email:
+                            input#email.form-control(type='email', name='email' placeholder='Email')
+                .modal-footer
+                    button.btn.btn-default(type='button', data-dismiss='modal') Close
+                    button.btn.btn-primary#save_user_info(type='button') Save changes
+            // /.modal-content
+        // /.modal-dialog
+    // /.modal
+
+    .content.container
+        .item#home.active HOME TAB
+        .item#profile PROFILE
+        .item#message PRESENTATION
+        if session.admin
+            .item#employee_list
+                h2.text-center Employees list
+                .user-entries
+                    .entry.col-md-12.hidden
+                        .avatar-holder.col-md-1
+                        .user-info.col-md-10
+                            .name John Doe
+                            .email
+                            .phone
+                        .btn.btn-primary.edit-user(data-user-id='0') Edit user profile

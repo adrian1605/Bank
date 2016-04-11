@@ -1,0 +1,20 @@
+//
+   Created by Adrian on 4/6/2016.
+
+extends layout
+block content
+   form.form-signin(action='/login')
+      h2.form-signin-heading.text-center Login
+      .alert.alert-danger.text-center Invalid username or password.
+
+      label.sr-only(for='inputUsername') Username
+      input#inputUsername.form-control(type='text', placeholder='Username', required='', autofocus='')
+      label.sr-only(for='inputPassword') Password
+      input#inputPassword.form-control(type='password', placeholder='Password', required='')
+      //.checkbox
+      //   label
+      //      input(type='checkbox', value='remember-me')
+      //      |  Remember me
+      button#login_btn.btn.btn-primary.btn-block(type='submit') Sign in
+
+   script(src="/js/login.js", type='text/javascript')

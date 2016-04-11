@@ -1,0 +1,140 @@
+body {
+  padding: 50px;
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 50px;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+a.inverted {
+  color: #FFFFFF;
+  text-decoration: none;
+}
+a.inverted:hover, a.inverted:focus, a.inverted:active:focus, a.inverted.active:focus {
+  color: #aaa;
+  text-decoration: none;
+}
+
+a {
+  color: #333;
+  text-decoration: none;
+}
+a:hover, a:focus, a:active:focus, a.active:focus {
+  color: #666;
+  text-decoration: none;
+}
+
+.navbar-fixed-top .text-holder {
+  display: block;
+  line-height: 20px;
+  padding-top: 15px;
+}
+  .brand {
+    font-weight: 700;
+    font-size: 20px;
+    margin-right: 20px;
+  }
+
+.modal {
+  text-align: center;
+  padding: 0!important;
+}
+.modal:before {
+  content: '';
+  display: inline-block;
+  height: 100%;
+  vertical-align: middle;
+  margin-right: -4px; /* Adjusts for spacing */
+}
+
+.modal-dialog {
+  display: inline-block;
+  text-align: left;
+  vertical-align: middle;
+}
+.modal-body {
+  min-height: 200px;
+}
+.modal-header, .modal-footer {
+  border: none !important;
+}
+.content .item {
+  display: none;
+}
+.content .item.active {
+  display: block;
+}
+.alert {
+  display: none;
+}
+
+.btn.btn-primary {
+  background-color: #666;
+  border-color: #333;
+  border-radius: 2px;
+}
+.btn:hover, .btn:focus, .btn:active:focus, .btn.active:focus {
+  background-color: #999;
+  border-color: #666;
+}
+.form-control {
+  border-radius: 2px !important;
+}
+.form-signin {
+  max-width: 330px;
+  padding: 15px;
+  margin: 0 auto;
+}
+.form-signin .form-signin-heading,
+.form-signin .checkbox {
+  margin-bottom: 20px;
+}
+.form-signin .checkbox {
+  font-weight: normal;
+}
+.form-signin .form-control {
+  position: relative;
+  height: auto;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  padding: 10px;
+  font-size: 16px;
+  margin-bottom: 10px;
+}
+.form-signin .form-control:focus {
+  z-index: 2;
+}
+
+/* EMPLOYEE LIST STYLES */
+.entry {
+  border-bottom: 2px solid #ccc;
+  padding: 20px 50px;
+}
+.user-info.col-md-10 {
+  padding-top: 20px;
+}
+.avatar-holder.col-md-1 {
+  width: 100px;
+  height: 100px;
+  background-size: cover;
+  border-radius: 50%;
+}
+.name {
+  font-size: 20px;
+  font-weight: 700;
+}
+.edit-user {
+  position: absolute;
+  bottom: 20px;
+  right: 50px;
+}
+.edit-user-modal {
+  background: #af2;
+}
