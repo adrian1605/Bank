@@ -28,9 +28,7 @@ module.exports = {
   relations: {
     'hasMany': {
       'account': {
-        foreignKey: 'account_id',
-        through: 'clients_accounts',
-        as: 'Accounts'
+        foreignKey: 'client_id'
       }
     }
   }

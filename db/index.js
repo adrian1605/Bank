@@ -12,14 +12,14 @@ var singleton = function singleton(){
   * */
   this.setup = function (database, username, password, obj){
     if(arguments.length == 2){
-      sequelize = new Sequelize(database, username);
+      sequelize = new Sequelize(database, username, null, {omitNull: true});
     } else if(arguments.length == 3){
-      sequelize = new Sequelize(database, username, password);
+      sequelize = new Sequelize(database, username, password, {omitNull: true});
     } else if(arguments.length == 4){
       if(_.isObject(obj)) {
           obj['logging'] = log.trace.bind(log);
       }
-      sequelize = new Sequelize(database, username, password, obj);
+      sequelize = new Sequelize(database, username, password, Object.assign({omitNull: true}, obj));
     }
     init();
     return sequelize.authenticate();

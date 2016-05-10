@@ -22,13 +22,13 @@ module.exports = {
         foreignKey: 'client_id',
         allowNull: true
       }
-    },
-    'hasMany': {
-      'client': {
-        as: 'Clients',
-        foreignKey: 'account_id',
-        through: 'clients_accounts'
-      }
+    //},
+    //'hasMany': {
+    //  'client': {
+    //    as: 'Clients',
+    //    foreignKey: 'account_id',
+    //    through: 'clients_accounts'
+    //  }
     }
   }
 };

@@ -26,8 +26,6 @@ block content
                             span.sr-only (current)
                     li
                         a(href='#', data-item='message') Message
-                    li
-                        a(href='#', data-item='profile') Action
                     if session.admin
                         li.dropdown
                             a.dropdown-toggle(href='#', data-toggle='dropdown', role='button', aria-haspopup='true', aria-expanded='false')
@@ -46,6 +44,17 @@ block content
                                 li.divider(role='separator')
                                 li
                                     a(href='#') One more separated link
+                    else
+                        li.hidden
+                            a.manage_accounts_link(href='#', data-item='account_list') Action
+                        li.dropdown
+                            a.dropdown-toggle(href='#', data-toggle='dropdown', role='button', aria-haspopup='true', aria-expanded='false')
+                                | Actions
+                                span.caret
+                            ul.dropdown-menu
+                                li
+                                    a(href='#', data-item='client_list') View Clients
+
                 ul.nav.navbar-nav.navbar-right
                     li
                         span.text-holder
@@ -55,13 +64,83 @@ block content
                             | ,
                     li
                         a(href='logout') LOG OUT
-                form.navbar-form.navbar-right(role='search')
-                    .form-group
-                        input.form-control(type='text', placeholder='Search')
-                    button.btn.btn-default(type='submit') Submit
             // /.navbar-collapse
         // /.container-fluid
 
+    .content.container
+        .item#home.active HOME TAB
+        .item#message PRESENTATION
+        if session.admin
+            .item#employee_list
+                h2.text-center Employees list
+                button.add-user.btn.pull-right
+                    i.fa.fa-user-plus(aria-hidden='true')
+                        |   Add user
+
+                .user-entries
+                    .entry.col-md-12.hidden
+                        .avatar-holder.col-md-1
+                        .user-info.col-md-10
+                            .name John Doe
+                            .email
+                            .phone
+                        .btn.btn-primary.remove-user.pull-right
+                            i.fa.fa-trash(aria-hidden='true')
+                                |   Delete user
+                        .btn.btn-primary.edit-user.pull-right
+                            i.fa.fa-pencil(aria-hidden='true')
+                                |   Edit user profile
+                        .btn.btn-primary.view-report.pull-right
+                            i.fa.fa-book(aria-hidden='true')
+                                |   View report
+        else
+            .item#client_list
+                h2.text-center Clients list
+                button.add-client.btn.pull-right
+                    i.fa.fa-user-plus(aria-hidden='true')
+                        |   Add client
+
+                .client-entries
+                    .entry.col-md-12.hidden
+                        .client-info.col-md-10
+                            .name John Doe
+                            .id_card_number
+                            .cnp
+                            .address
+                            .phone
+                            .email
+                        .btn.btn-primary.edit-client.pull-right
+                            i.fa.fa-pencil(aria-hidden='true')
+                                |   Edit client profile
+                        .btn.btn-primary.manage-accounts.pull-right
+                            i.fa.fa-book(aria-hidden='true')
+                                |   Manage accounts
+
+            .item#account_list
+                h2.title.text-center Manage account
+                button.add-account.btn.pull-right
+                    i.fa.fa-user-plus(aria-hidden='true')
+                        |   Add account
+                .account-entries
+                    .entry.col-md-12.hidden
+                        .client-info.col-md-10
+                            .name
+                            .type
+                            .amount
+                            .created-date
+                        .btn.btn-primary.remove-account.pull-right
+                            i.fa.fa-trash(aria-hidden='true')
+                                |   Delete account
+                        .btn.btn-primary.edit-account.pull-right
+                            i.fa.fa-pencil(aria-hidden='true')
+                                |   Edit account info
+                        .btn.btn-primary.new-transaction.pull-right
+                            i.fa.fa-credit-card(aria-hidden='true')
+                                |   New transaction
+
+
+
+    // MODALS
     .modal#edit-user-modal.fade(tabindex='-1', role='dialog')
         .modal-dialog
             .modal-content
@@ -96,18 +175,82 @@ block content
         // /.modal-dialog
     // /.modal
 
-    .content.container
-        .item#home.active HOME TAB
-        .item#profile PROFILE
-        .item#message PRESENTATION
-        if session.admin
-            .item#employee_list
-                h2.text-center Employees list
-                .user-entries
-                    .entry.col-md-12.hidden
-                        .avatar-holder.col-md-1
-                        .user-info.col-md-10
-                            .name John Doe
-                            .email
-                            .phone
-                        .btn.btn-primary.edit-user(data-user-id='0') Edit user profile
+    .modal#reports-modal.fade(tabindex='-1', role='dialog')
+        .modal-dialog
+            .modal-content
+                .modal-header
+                    button.close(type='button', data-dismiss='modal', aria-label='Close')
+                        span(aria-hidden='true') X
+                    h4.modal-title.text-center View employee report
+                .modal-body
+                    form#report-form(role='form')
+                        .form-group.hidden
+                            input.form-control(type='text', name='user_id')
+                        .form-group
+                            label(for='start_date') Start date:
+                            input#start_date.form-control(type='text', name='start_date' placeholder='Start Date')
+                        .form-group
+                            label(for='end_date') End Date:
+                            input#end_date.form-control(type='text', name='end_date' placeholder='End Date')
+
+                    #reports-list
+                        .report-entry.col-md-12
+                            .type Transaction type
+                            .amount Amount
+                            .dest Destinatar
+                        .report-entry.col-md-12
+                            .type Transaction type
+                            .amount Amount
+                            .dest Destinatar
+                        .report-entry.col-md-12
+                            .type Transaction type
+                            .amount Amount
+                            .dest Destinatar
+                        .report-entry.col-md-12
+                            .type Transaction type
+                            .amount Amount
+                            .dest Destinatar
+                .modal-footer
+                    button.btn.btn-default(type='button', data-dismiss='modal') Close
+                    button.btn.btn-primary#generate-report(type='button') Generate report
+            // /.modal-content
+        // /.modal-dialog
+    // /.modal
+
+
+    .modal#edit-client-modal.fade(tabindex='-1', role='dialog')
+        .modal-dialog
+            .modal-content
+                .modal-header
+                    button.close(type='button', data-dismiss='modal', aria-label='Close')
+                        span(aria-hidden='true') X
+                    h4.modal-title.text-center Edit client profile
+                .modal-body
+                    form#client_info(role='form')
+                        .alert.alert-success.text-center Your changes have been saved.
+                        .form-group.hidden
+                            input.form-control(type='text', name='id')
+                        .form-group
+                            label(for='name') Full Name:
+                            input#name.form-control(type='text', name='name' placeholder='Full Name')
+                        .form-group
+                            label(for='id_card_number') Identity card number:
+                            input#id_card_number.form-control(type='text', name='id_card_number' placeholder='Identity card number')
+                        .form-group
+                            label(for='cnp') Personal Numerical Code:
+                            input#cnp.form-control(type='text', name='cnp' placeholder='Personal Numerical Code')
+                        .form-group
+                            label(for='address') Address:
+                            input#address.form-control(type='text', name='address' placeholder='Address')
+                        .form-group
+                            label(for='phone') Phone:
+                            input#phone.form-control(type='text', name='phone' placeholder='Phone')
+                        .form-group
+                            label(for='email') Email:
+                            input#email.form-control(type='email', name='email' placeholder='Email')
+                .modal-footer
+                    button.btn.btn-default(type='button', data-dismiss='modal') Close
+                    button.btn.btn-primary#save_client_info(type='button') Save changes
+            // /.modal-content
+        // /.modal-dialog
+    // /.modal
