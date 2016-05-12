@@ -18,32 +18,32 @@ USE `bank`;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `clients`
+-- Table structure for table `transactions`
 --
 
-DROP TABLE IF EXISTS `clients`;
+DROP TABLE IF EXISTS `transactions`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `clients` (
+CREATE TABLE `transactions` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(45) NOT NULL,
-  `id_card_number` varchar(45) NOT NULL,
-  `cnp` varchar(45) NOT NULL,
-  `address` varchar(45) DEFAULT NULL,
-  `phone` varchar(15) DEFAULT NULL,
-  `email` varchar(45) DEFAULT NULL,
+  `from` varchar(45) NOT NULL,
+  `to` varchar(45) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `created_date` datetime DEFAULT NULL,
+  `type` varchar(45) DEFAULT NULL,
+  `amount` decimal(10,2) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `clients`
+-- Dumping data for table `transactions`
 --
 
-LOCK TABLES `clients` WRITE;
-/*!40000 ALTER TABLE `clients` DISABLE KEYS */;
-INSERT INTO `clients` VALUES (1,'Adrian Pogacean','RO27BTRLASD87228157XX','1910516260019','str. Pomicultorilor 2 ap 6','0746866101','adrian.pogacean@yahoo.com'),(2,'Mihaela','RO63BRDE3QW3DSKFNS33220MM','2920616240019','Faget 6',NULL,NULL);
-/*!40000 ALTER TABLE `clients` ENABLE KEYS */;
+LOCK TABLES `transactions` WRITE;
+/*!40000 ALTER TABLE `transactions` DISABLE KEYS */;
+INSERT INTO `transactions` VALUES (1,'RO09C0809995E7494A804A3E897BE3D424','RO8E5972B058674D2F82229D590EDE39A2',12,'2016-05-12 10:40:21',NULL,50.00),(2,'RO09C0809995E7494A804A3E897BE3D424','RO8E5972B058674D2F82229D590EDE39A2',12,'2016-05-12 10:48:17',NULL,100.00),(3,'RO09C0809995E7494A804A3E897BE3D424','RO8E5972B058674D2F82229D590EDE39A2',12,'2016-05-12 12:03:44','transfer',150.50),(4,'RO09C0809995E7494A804A3E897BE3D424','ROBBBFEF64E6EF4A2B81C19A6BDF250FAD',12,'2016-05-12 12:10:41','transfer',6400.00),(5,'RO09C0809995E7494A804A3E897BE3D424','RO8E5972B058674D2F82229D590EDE39A2',12,'2016-05-12 12:11:35','transfer',6400.24),(6,'ROBBBFEF64E6EF4A2B81C19A6BDF250FAD','RO09C0809995E7494A804A3E897BE3D424',12,'2016-05-12 12:12:10','transfer',20000.00),(7,'ROBBBFEF64E6EF4A2B81C19A6BDF250FAD','electricity',12,'2016-05-12 12:12:35','payment',15.52);
+/*!40000 ALTER TABLE `transactions` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
