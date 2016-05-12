@@ -254,3 +254,28 @@ block content
             // /.modal-content
         // /.modal-dialog
     // /.modal
+
+    .modal#edit-account-modal.fade(tabindex='-1', role='dialog')
+        .modal-dialog
+            .modal-content
+                .modal-header
+                    button.close(type='button', data-dismiss='modal', aria-label='Close')
+                        span(aria-hidden='true') X
+                    h4.modal-title.text-center Edit account information
+                .modal-body
+                    form#account_info(role='form')
+                        .alert.alert-success.text-center Your changes have been saved.
+                        .form-group.hidden
+                            input.form-control(type='text', name='account_id')
+                        .form-group
+                            label(for='type') Type:
+                            input#name.form-control(type='text', name='type' placeholder='Full Name')
+                        .form-group
+                            label(for='money_amount') Blance:
+                            input#money_amount.form-control(type='text', name='money_amount' placeholder='Balance')
+                .modal-footer
+                    button.btn.btn-default(type='button', data-dismiss='modal') Close
+                    button.btn.btn-primary#save_account_info(type='button') Save changes
+            // /.modal-content
+        // /.modal-dialog
+    // /.modal

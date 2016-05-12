@@ -261,36 +261,104 @@ $(document).ready(function() {
         $('#client_info')[0].reset();
     });
 
+    /* ACCOUNTS */
     $(document).on('click', '.manage-accounts', function() {
         var clientId = $(this).parents('.entry').attr('data-client-id'),
             clientName = $(this).parents('.entry').find('.name').text();
 
         $.ajax({
-            url: '/clients/accounts/' + clientId,
+            url: '/clients/accounts_list/' + clientId,
             method: 'get'
         }).
-        done(function (data) {
-            if (data.type === 'error') return;
+            done(function (data) {
+                if (data.type === 'error') return;
 
-            var entry = $('#account_list .entry'),
-                newEntry,
-                accounts = data.accounts;
+                var entry = $('#account_list .entry'),
+                    newEntry,
+                    accounts = data.accounts;
 
-            for (let i = 0; i < accounts.length; i++) {
-                newEntry = entry.clone();
+                for (let i = 0; i < accounts.length; i++) {
+                    newEntry = entry.clone();
 
-                newEntry.attr('data-account-id', accounts[i].id);
-                newEntry.find('.name').text(accounts[i].client.id_card_number);
-                newEntry.find('.type').text(accounts[i].type);
-                newEntry.find('.amount').text(accounts[i].money_amount);
-                newEntry.find('.created-date').text(accounts[i].created_date);
-                newEntry.removeClass('hidden').appendTo('.account-entries');
-            }
-        });
+                    newEntry.attr('data-account-id', accounts[i].account_id);
+                    newEntry.find('.name').text(accounts[i].client.id_card_number);
+                    newEntry.find('.type').text(accounts[i].type);
+                    newEntry.find('.amount').text(accounts[i].money_amount);
+                    newEntry.find('.created-date').text(accounts[i].created_date);
+                    newEntry.removeClass('hidden').appendTo('.account-entries');
+                }
+            });
 
         $('#manage_accounts .title').html(`Manage accounts for <b>${clientName}</b>`);
         $('.manage_accounts_link').click();
     })
+
+    $(document).on('click', '.edit-account', function () {
+        var accountId = $(this).parents('.entry').attr('data-account-id');
+        $.ajax({
+            url: '/clients/account/' + accountId,
+            method: 'GET'
+        })
+            .done(function(data) {
+                if (data.type === 'error') return;
+
+                $('#edit-account-modal .modal-title').text('Edit account');
+                $('#account_info [name=account_id]').val(data.account.account_id);
+                $('#account_info [name=client_id]').val(data.account.client_id);
+                setFormValues($('#account_info'), data.account);
+                $('#edit-account-modal').modal();
+            });
+    });
+
+    $(document).on('click', '.add-account', function () {
+        $('#edit-account-modal .modal-title').text('Add new account');
+        $('#account_info')[0].reset();
+        $('#edit-account-modal').modal();
+    });
+
+    $('#save_account_info').on('click', function(ev) {
+        ev.preventDefault();
+        var formValues = objectifyFormValues($('#account_info')),
+            clientId = formValues.client_id,
+            accountId = formValues.id;
+        let method = !accountId ? 'post' : 'put';
+
+        $.ajax({
+            url: '/dashboard/account',
+            method: method,
+            data: formValues
+        })
+            .done(function(data) {
+                if (data.type === 'error') return;
+                $('#account_info .alert').slideDown();
+
+                var newEntry,
+                    account = data.account;
+
+                if (method == 'post') {
+                    var entry = $($('#employee_list .entry').get(0)),
+                        newEntry = entry.clone();
+                } else {
+                    newEntry = $('#employee_list .entry[data-account-id=' + accountId + ']');
+                }
+
+                var name = (account.first_name && account.last_name) ? account.first_name + ' ' + account.last_name : account.accountname,
+                    avatar = account.avatar ? account.avatar : 'noavatar.jpg';
+
+                newEntry.find('.avatar-holder').css('background-image', "url(/images/" + avatar + ")");
+                newEntry.find('.name').text(name);
+                newEntry.find('.email').text(account.email);
+                newEntry.find('.phone').text(account.phone);
+
+                if (method == 'post') {
+                    newEntry.attr('data-account-id', account.id);
+                    newEntry.removeClass('hidden').appendTo('.account-entries');
+                }
+            });
+
+
+    });
+
 });
 
 function objectifyFormValues($form) {

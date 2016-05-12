@@ -77,7 +77,7 @@ router.post('/client', function(req, res, next) {
     });
 });
 
-router.get('/accounts/:id', function(req, res, next) {
+router.get('/accounts_list/:id', function(req, res, next) {
     const Client = db.model('client'),
           Account = db.model('account'),
           clientId = req.params.id;
@@ -93,6 +93,26 @@ router.get('/accounts/:id', function(req, res, next) {
         }
     }).error(function(e) {
         log.warn("Could not create client.");
+        log.error(e);
+        return res.error(500, "SERVER_ERROR");
+    });
+});
+
+
+router.get('/account/:id', function(req, res, next) {
+    var Account = db.model('account'),
+        id = req.params.id;
+
+    Account.find({
+        where: {
+            account_id: id
+        }
+    }).then(function(accountObj) {
+        if(accountObj) {
+            res.send({type: 'success', account: accountObj});
+        }
+    }).error(function(e) {
+        log.warn("Could not read account based on id.");
         log.error(e);
         return res.error(500, "SERVER_ERROR");
     });
