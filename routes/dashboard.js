@@ -76,7 +76,7 @@ router.post('/employee', function(req, res, next) {
         lastName = params.last_name || '';
 
     params.date = new Date(Date.parse(params.date));
-    params.username = `${firstName}${lastName}`;
+    params.username = firstName+lastName;
     params.password = params.username;
 
     User.create(params).then(function(userObj) {
@@ -112,18 +112,31 @@ router.delete('/employee/:id', function(req, res, next) {
     });
 });
 
-router.get('/employee/report', function(req, res, next) {
+router.get('/employee/report/:id', function(req, res, next) {
+    var Transaction = db.model('transaction');
     var User = db.model('user');
-    User.findAll({
-        //where: {
-        //    is_admin: 0
-        //}
+    var userId = req.params.id;
+    var params = req.body;
+
+    params.start_date = new Date(Date.parse(params.start_date));
+    params.end_date = new Date(Date.parse(params.end_date));
+
+
+    Transaction.findAll({
+        where: {
+            user_id: userId,
+            //created_date: {
+            //    lt: params.end_date,
+            //    gte: params.start_date
+            //}
+        },
+        include: [User]
     }).then(function(reportsObj) {
         if(reportsObj) {
             res.send({type: 'success', reports: reportsObj});
         }
     }).error(function(e) {
-        log.warn("Could not read users.");
+        log.warn("Could not read user reports.");
         log.error(e);
         return res.error(500, "SERVER_ERROR");
     });

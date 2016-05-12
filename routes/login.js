@@ -24,6 +24,7 @@ router.post('/',  function(req, res, next) {
         if(userObj) {
             req.session.user = userObj.username;
             req.session.admin = userObj.is_admin;
+            req.session.userId = userObj.id;
             res.send({type: 'success', isAdmin: userObj.is_admin});
         } else {
             res.send({type: 'error', message: 'Login failed'});

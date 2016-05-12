@@ -20,40 +20,11 @@ block content
             // Collect the nav links, forms, and other content for toggling
             .collapse.navbar-collapse.content-toggle
                 ul.nav.navbar-nav
-                    li.active
-                        a(href='#', data-item='home')
-                            | Home
-                            span.sr-only (current)
-                    li
-                        a(href='#', data-item='message') Message
-                    if session.admin
-                        li.dropdown
-                            a.dropdown-toggle(href='#', data-toggle='dropdown', role='button', aria-haspopup='true', aria-expanded='false')
-                                | Admin menu
-                                span.caret
-                            ul.dropdown-menu
-                                li
-                                    a(href='#', data-item='employee_list') View Employees
-                                li
-                                    a(href='#') Another action
-                                li
-                                    a(href='#') Something else here
-                                li.divider(role='separator')
-                                li
-                                    a(href='#') Separated link
-                                li.divider(role='separator')
-                                li
-                                    a(href='#') One more separated link
-                    else
+                    if !session.admin
                         li.hidden
                             a.manage_accounts_link(href='#', data-item='account_list') Action
-                        li.dropdown
-                            a.dropdown-toggle(href='#', data-toggle='dropdown', role='button', aria-haspopup='true', aria-expanded='false')
-                                | Actions
-                                span.caret
-                            ul.dropdown-menu
-                                li
-                                    a(href='#', data-item='client_list') View Clients
+                        li.active
+                            a(href='#', data-item='client_list') HOME
 
                 ul.nav.navbar-nav.navbar-right
                     li
@@ -68,10 +39,8 @@ block content
         // /.container-fluid
 
     .content.container
-        .item#home.active HOME TAB
-        .item#message PRESENTATION
         if session.admin
-            .item#employee_list
+            .item#employee_list.active
                 h2.text-center Employees list
                 button.add-user.btn.pull-right
                     i.fa.fa-user-plus(aria-hidden='true')
@@ -94,7 +63,7 @@ block content
                             i.fa.fa-book(aria-hidden='true')
                                 |   View report
         else
-            .item#client_list
+            .item#client_list.active
                 h2.text-center Clients list
                 button.add-client.btn.pull-right
                     i.fa.fa-user-plus(aria-hidden='true')
@@ -194,22 +163,14 @@ block content
                             input#end_date.form-control(type='text', name='end_date' placeholder='End Date')
 
                     #reports-list
-                        .report-entry.col-md-12
-                            .type Transaction type
-                            .amount Amount
-                            .dest Destinatar
-                        .report-entry.col-md-12
-                            .type Transaction type
-                            .amount Amount
-                            .dest Destinatar
-                        .report-entry.col-md-12
-                            .type Transaction type
-                            .amount Amount
-                            .dest Destinatar
-                        .report-entry.col-md-12
-                            .type Transaction type
-                            .amount Amount
-                            .dest Destinatar
+                        .report-entry.col-md-12.hidden.head
+                            .col-md-1.user Performed by
+                            .col-md-1.type Transaction type
+                            .col-md-1.amount Amount
+                            .col-md-4.from From
+                            .col-md-4.to To
+                            .col-md-1.date Created at
+
                 .modal-footer
                     button.btn.btn-default(type='button', data-dismiss='modal') Close
                     button.btn.btn-primary#generate-report(type='button') Generate report
@@ -267,15 +228,58 @@ block content
                         .alert.alert-success.text-center Your changes have been saved.
                         .form-group.hidden
                             input.form-control(type='text', name='account_id')
+                        .form-group.hidden
+                            input.form-control(type='text', name='client_id')
                         .form-group
                             label(for='type') Type:
-                            input#name.form-control(type='text', name='type' placeholder='Full Name')
+                            select#type.form-control(name='account_type')
+                                option(value='debit') Debit
+                                option(value='credit') Credit
+                                option(value='savings') Savings
                         .form-group
                             label(for='money_amount') Blance:
                             input#money_amount.form-control(type='text', name='money_amount' placeholder='Balance')
                 .modal-footer
                     button.btn.btn-default(type='button', data-dismiss='modal') Close
                     button.btn.btn-primary#save_account_info(type='button') Save changes
+            // /.modal-content
+        // /.modal-dialog
+    // /.modal
+
+    .modal#transaction-modal.fade(tabindex='-1', role='dialog')
+        .modal-dialog
+            .modal-content
+                .modal-header
+                    button.close(type='button', data-dismiss='modal', aria-label='Close')
+                        span(aria-hidden='true') X
+                    h4.modal-title.text-center Create a new transaction
+                .modal-body
+                    form#transaction_form(role='form')
+                        .alert.alert-success.text-center Your transaction was processed successfully.
+                        .form-group(style="padding-bottom: 20px;")
+                            label(for='transaction_type') Transaction type:
+                            select#transaction_type.form-control(name='type')
+                                option(value='transfer') Transfer
+                                option(value='payment') Payment
+                        .form-group
+                            label(for='from') From:
+                            input.form-control.disabled(type='text', name='from')
+                        .form-group
+                            label(for='select_accounts') Transfer to:
+                            select#select_accounts.to.form-control(name='to')
+                            select#bill.form-control.bill.hidden(name='bill')
+                                option(value='electricity') Electricity
+                                option(value='gas') Gas
+                                option(value='phone') Phone
+                                option(value='tv') TV
+                                option(value='internet') Internet
+                        .form-group
+                            label(for='amount') Amount:
+                            input#amount.form-control(type='text', name='amount')
+
+                .modal-footer
+                    button.btn.btn-default(type='button', data-dismiss='modal') Close
+                    button.btn.btn-primary#process_transfer(type='button') Process
             // /.modal-content
         // /.modal-dialog
     // /.modal

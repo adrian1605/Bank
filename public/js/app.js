@@ -18,7 +18,7 @@ $(document).ready(function() {
     });
 
     /* ADMIN SPECIFIC JS */
-    $('a[data-item=employee_list]').on('click', function (ev) {
+    function getEmployees() {
         if ($('#employee_list .entry:not(.hidden)').length > 0) {
             return;
         }
@@ -27,26 +27,34 @@ $(document).ready(function() {
             url: '/dashboard/employee_list',
             method: 'GET'
         })
-        .done(function(data) {
-            if (data.type === 'error') return;
+            .done(function(data) {
+                if (data.type === 'error') return;
 
-            var entry = $('#employee_list .entry'),
-                newEntry,
-                users = data.users;
+                var entry = $('#employee_list .entry'),
+                    newEntry,
+                    users = data.users;
 
-            for (let i = 0; i < users.length; i++) {
-                newEntry = entry.clone();
-                var name = (users[i].first_name && users[i].last_name) ? users[i].first_name + ' ' + users[i].last_name : users[i].username,
-                    avatar = users[i].avatar ? users[i].avatar : 'noavatar.jpg';
+                for (let i = 0; i < users.length; i++) {
+                    newEntry = entry.clone();
+                    var name = (users[i].first_name && users[i].last_name) ? users[i].first_name + ' ' + users[i].last_name : users[i].username,
+                        avatar = users[i].avatar ? users[i].avatar : 'noavatar.jpg';
 
-                newEntry.attr('data-user-id', users[i].id);
-                newEntry.find('.avatar-holder').css('background-image', "url(/images/" + avatar + ")");
-                newEntry.find('.name').text(name);
-                newEntry.find('.email').text(users[i].email);
-                newEntry.find('.phone').text(users[i].phone);
-                newEntry.removeClass('hidden').appendTo('.user-entries');
-            }
-        });
+                    newEntry.attr('data-user-id', users[i].id);
+                    newEntry.find('.avatar-holder').css('background-image', "url(/images/" + avatar + ")");
+                    newEntry.find('.name').text(name);
+                    newEntry.find('.email').text(users[i].email);
+                    newEntry.find('.phone').text(users[i].phone);
+                    newEntry.removeClass('hidden').appendTo('.user-entries');
+                }
+            });
+    }
+
+    if($('#employee_list').hasClass('active')) {
+        getEmployees();
+    }
+
+    $('a[data-item=employee_list]').on('click', function (ev) {
+        getEmployees();
     });
 
     $(document).on('click', '.edit-user', function () {
@@ -150,19 +158,39 @@ $(document).ready(function() {
             userId = $('#reports-modal').attr('data-user-id');
 
         $.ajax({
-            url: '/dashboard/employee/report',
+            url: '/dashboard/employee/report/' + userId,
             method: 'get',
-            data: Object.assign({user_is: userId}, formValues)
+            data: formValues
         })
         .done(function(data) {
-                console.log('data REPORt', data);
+                if (data.type === 'error') return;
+
+                var entry = $('#reports-list .report-entry.head'),
+                    newEntry,
+                    reports = data.reports;
+                entry.removeClass('hidden');
+                $('#reports-list .report-entry:not(.head)').remove();
+
+                for (let i = 0; i < reports.length; i++) {
+                    newEntry = entry.clone();
+                    var name = (reports[i].user.first_name && reports[i].user.last_name) ? reports[i].user.first_name + ' ' + reports[i].user.last_name : reports[i].user.username;
+
+                    newEntry.find('.user').text(name);
+                    newEntry.find('.type').text(reports[i].type);
+                    newEntry.find('.amount').text(reports[i].amount);
+                    newEntry.find('.from').text(reports[i].from);
+                    newEntry.find('.to').text(reports[i].to);
+                    var date = new Date(reports[i].created_date).toLocaleDateString();
+                    newEntry.find('.date').text(date);
+                    newEntry.removeClass('head').appendTo('#reports-list');
+                }
         });
 
     });
 
 
     /* REGULAR USER JS */
-    $('a[data-item=client_list]').on('click', function (ev) {
+    function getClients() {
         if ($('#client_list .entry:not(.hidden)').length > 0) {
             return;
         }
@@ -191,8 +219,15 @@ $(document).ready(function() {
                     newEntry.removeClass('hidden').appendTo('.client-entries');
                 }
             });
+    }
+    if($('#client_list').hasClass('active')) {
+        getClients();
+    }
+
+    $('a[data-item=client_list]').on('click', function (ev) {
+        getClients();
     });
-    
+
     $(document).on('click', '.edit-client', function () {
         var clientId = $(this).parents('.entry').attr('data-client-id');
         $.ajax({
@@ -264,31 +299,33 @@ $(document).ready(function() {
     /* ACCOUNTS */
     $(document).on('click', '.manage-accounts', function() {
         var clientId = $(this).parents('.entry').attr('data-client-id'),
-            clientName = $(this).parents('.entry').find('.name').text();
+            clientName = $(this).parents('.entry').find('.name').text(),
+            entry = $('#account_list .entry.hidden');
 
+        $('#account_list .entry:not(.hidden)').remove();
         $.ajax({
             url: '/clients/accounts_list/' + clientId,
             method: 'get'
         }).
-            done(function (data) {
-                if (data.type === 'error') return;
+        done(function (data) {
+            if (data.type === 'error') return;
 
-                var entry = $('#account_list .entry'),
-                    newEntry,
-                    accounts = data.accounts;
+            var newEntry,
+                accounts = data.accounts;
 
-                for (let i = 0; i < accounts.length; i++) {
-                    newEntry = entry.clone();
+            $('#account_list').attr('data-client-id', clientId);
 
-                    newEntry.attr('data-account-id', accounts[i].account_id);
-                    newEntry.find('.name').text(accounts[i].client.id_card_number);
-                    newEntry.find('.type').text(accounts[i].type);
-                    newEntry.find('.amount').text(accounts[i].money_amount);
-                    newEntry.find('.created-date').text(accounts[i].created_date);
-                    newEntry.removeClass('hidden').appendTo('.account-entries');
-                }
-            });
+            for (let i = 0; i < accounts.length; i++) {
+                newEntry = entry.clone();
 
+                newEntry.attr('data-account-id', accounts[i].account_id);
+                newEntry.find('.name').text(accounts[i].account_id);
+                newEntry.find('.type').text(accounts[i].account_type);
+                newEntry.find('.amount').text(accounts[i].money_amount);
+                newEntry.find('.created-date').text(accounts[i].created_date);
+                newEntry.removeClass('hidden').appendTo('.account-entries');
+            }
+        });
         $('#manage_accounts .title').html(`Manage accounts for <b>${clientName}</b>`);
         $('.manage_accounts_link').click();
     })
@@ -304,7 +341,7 @@ $(document).ready(function() {
 
                 $('#edit-account-modal .modal-title').text('Edit account');
                 $('#account_info [name=account_id]').val(data.account.account_id);
-                $('#account_info [name=client_id]').val(data.account.client_id);
+                $('#account_info [name=client_id]').val($('#account_list').attr('data-client-id'));
                 setFormValues($('#account_info'), data.account);
                 $('#edit-account-modal').modal();
             });
@@ -313,6 +350,7 @@ $(document).ready(function() {
     $(document).on('click', '.add-account', function () {
         $('#edit-account-modal .modal-title').text('Add new account');
         $('#account_info')[0].reset();
+        $('#account_info [name=client_id]').val($('#account_list').attr('data-client-id'));
         $('#edit-account-modal').modal();
     });
 
@@ -320,11 +358,11 @@ $(document).ready(function() {
         ev.preventDefault();
         var formValues = objectifyFormValues($('#account_info')),
             clientId = formValues.client_id,
-            accountId = formValues.id;
+            accountId = formValues.account_id;
         let method = !accountId ? 'post' : 'put';
 
         $.ajax({
-            url: '/dashboard/account',
+            url: '/clients/account',
             method: method,
             data: formValues
         })
@@ -336,29 +374,107 @@ $(document).ready(function() {
                     account = data.account;
 
                 if (method == 'post') {
-                    var entry = $($('#employee_list .entry').get(0)),
+                    var entry = $($('#account_list .entry').get(0)),
                         newEntry = entry.clone();
                 } else {
-                    newEntry = $('#employee_list .entry[data-account-id=' + accountId + ']');
+                    newEntry = $('#account_list .entry[data-account-id=' + accountId + ']');
                 }
 
-                var name = (account.first_name && account.last_name) ? account.first_name + ' ' + account.last_name : account.accountname,
-                    avatar = account.avatar ? account.avatar : 'noavatar.jpg';
-
-                newEntry.find('.avatar-holder').css('background-image', "url(/images/" + avatar + ")");
-                newEntry.find('.name').text(name);
-                newEntry.find('.email').text(account.email);
-                newEntry.find('.phone').text(account.phone);
+                newEntry.find('.name').text(account.account_id);
+                newEntry.find('.type').text(account.account_type);
+                newEntry.find('.amount').text(account.money_amount);
 
                 if (method == 'post') {
                     newEntry.attr('data-account-id', account.id);
                     newEntry.removeClass('hidden').appendTo('.account-entries');
                 }
             });
-
-
     });
 
+    $(document).on('click', '.remove-account', function () {
+        const elem = $(this),
+            accountId = elem.parents('.entry').attr('data-account-id');
+
+        $.ajax({
+            url: '/clients/account/' + accountId,
+            method: 'delete'
+        })
+            .done(function() {
+                elem.parents('.entry').remove();
+            })
+    });
+
+    $('#edit-account-modal').on('hidden.bs.modal', function () {
+        $('#account_info .alert').hide();
+        $('#account_info')[0].reset();
+    });
+
+    /* TRANSACTIONS */
+    $(document).on('click', '.new-transaction', function () {
+        var accountId = $(this).parents('.entry').attr('data-account-id');
+
+        $.ajax({
+            url: '/clients/accounts_list',
+            method: 'get'
+        }).
+            done(function (data) {
+                if (data.type === 'error') return;
+
+                var accounts = data.accounts;
+
+                for (let i = 0; i < accounts.length; i++) {
+                    if (accounts[i].account_id != accountId) {
+                        var option = $('<option value=' + accounts[i].account_id + '>'+accounts[i].account_id + '</option>');
+                        option.appendTo('#select_accounts');
+                    }
+                }
+            });
+
+        $('#transaction-modal [name=from]').val(accountId);
+        $('#transaction-modal [name=from]').val(accountId);
+        $('#transaction-modal').modal();
+    });
+
+    $('#transaction_type').on('change', function () {
+         if ($(this).val() === 'payment') {
+            $('label[for=select_accounts]').text('Pay for:');
+            $('#transaction_form .to').addClass('hidden');
+            $('#transaction_form .bill').removeClass('hidden');
+         } else {
+             $('label[for=select_accounts]').text('Transfer to:');
+             $('#transaction_form .to').removeClass('hidden');
+             $('#transaction_form .bill').addClass('hidden');
+         }
+    });
+
+
+    $('#process_transfer').on('click', function (e) {
+        e.preventDefault();
+        var formData = objectifyFormValues($('#transaction_form'));
+        if (!formData.to) {
+            formData.to = formData.bill;
+            delete formData.bill;
+        }
+        $.ajax({
+            url: 'clients/transaction',
+            method: 'post',
+            data: formData
+        }).
+        done(function(data) {
+            if (data.type === 'success') {
+                $('#transaction_form .alert').removeClass('alert-danger').addClass('alert-success');
+            } else {
+                $('#transaction_form .alert').removeClass('alert-success').addClass('alert-danger');
+            }
+            $('#transaction_form .alert').text(data.message).slideDown();
+            console.log('data', data);
+        });
+    })
+
+    $('#transaction-modal').on('hidden.bs.modal', function () {
+        $('#transaction_form .alert').hide();
+        $('#transaction_form')[0].reset();
+    });
 });
 
 function objectifyFormValues($form) {
@@ -366,7 +482,7 @@ function objectifyFormValues($form) {
         obj = {};
 
     values.map(function(val) {
-        if (val.value != '') {
+        if (val.value != '' && !$form.find('[name=' + val.name + ']').hasClass('hidden')) {
             obj[val.name] = val.value;
         }
     });

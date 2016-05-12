@@ -17,7 +17,8 @@ require('./lib/util.js');
 require('./lib/logger.js');
 
 require('./db').setup('bank', /*pass:*/'root', /*pass:*/'root', {
-  host: 'localhost'
+  host: 'localhost',
+  port: '3306'
 }).complete(function(err) {
   if(err) {
     log.fatal('Could not connect to the database.');

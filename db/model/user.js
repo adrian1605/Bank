@@ -42,5 +42,12 @@ module.exports = {
       type: Seq.STRING,
       allowNull: true
     }
+  },
+  relations: {
+    'hasMany': {
+      'transaction': {
+        foreignKey: 'user_id'
+      }
+    }
   }
 };
